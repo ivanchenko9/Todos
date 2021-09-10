@@ -1,0 +1,89 @@
+body{
+    color: black;
+    font-family: 'Roboto', sans-serif;
+    background-color: #ebebe0;
+}
+
+.container{
+    margin: 20px 350px;
+    padding: 15px;
+}
+.main__title{
+    opacity: 0.5;
+    font-size: 35px;
+    text-align: center;
+}
+
+.content{
+}
+.create__task{
+    width: 100%;
+    padding: 10px 5px;
+    border: 2px solid black;
+    border-radius: 3px;
+    margin-bottom: 15px;
+}
+.confirme__all{
+    margin-right: 5px;
+}
+.create__task__input{
+    border-radius: 3px;
+}
+
+.tasks{
+
+}
+.task{
+    width: 100%;
+    display: flex;
+    padding: 5px 5px;
+    border: 2px solid black;
+    border-radius: 3px;
+    margin-bottom: 7px;
+    
+}
+.task__status{
+    width: 15%;
+    height: auto;
+}
+.task__title{
+    padding: 0px 10px;
+    width: 80%;
+    font-size: 18px;
+}
+.task__completed {
+    text-decoration: line-through #000 !important;
+    opacity: 0.4;
+}
+.task__delete{
+    width: 10%;
+    height: auto;
+}
+.display__settings{
+    width: 100%;
+    padding: 5px 5px;
+    display: flex;
+    justify-content: space-between;
+    border: 2px solid black;
+    border-radius: 3px;
+}
+.task__amount{
+    font-size: 13px;
+    opacity: 0.7;
+    padding-left: 5px;
+}
+.display__modes{
+    width: 40%;
+    display: flex;
+    justify-content: space-around;
+}
+.mode__all{}
+.mode__active{}
+.mode__completed{}
+.clear__completed{
+    font-size: 13px;
+    opacity: 0.7;
+    padding-right: 5px;
+}
+
+.controled{}
