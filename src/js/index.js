@@ -155,11 +155,13 @@ class Main{
         this.emitter.subscribe('event:clear-all-completed', () => {
             this.tasksEnst.clearAllCompletedTasks()
             this.displayTasks(store.getState().tasksData.todosAll)
+            todosAPI.clearDone()
         })
 
         this.emitter.subscribe('event:confirm-all', () => {
             this.tasksEnst.confirmeAllTasks()
             this.displayTasks(store.getState().tasksData.todosAll)
+            todosAPI.completeAll()
             this.tasksEnst.saveDataOnLocaleStorage()
         })
 
@@ -168,6 +170,7 @@ class Main{
             store.dispatch(setTodosAll(newArray))
             this.displayTasks(store.getState().tasksData.todosAll)
             this.changeTasksAmount()
+            todosAPI.updateTodo(event)
             this.tasksEnst.saveDataOnLocaleStorage()
         })
 
@@ -176,6 +179,7 @@ class Main{
             store.dispatch(setTodosAll(newArray))
             this.changeTasksAmount()
             this.displayTasks(store.getState().tasksData.todosAll)
+            todosAPI.deleteTodo(event)
             this.tasksEnst.saveDataOnLocaleStorage()
         })
 
@@ -216,6 +220,17 @@ class Main{
 
         firstLoad(){
             this.tasksEnst.getDataFromLocaleStorage()
+            // const response = todosAPI.getTodosData()
+            // store.dispatch(setTodosAll(response.todosAll))
+            // store.dispatch(setIsConfirmedAll(response.isCompletedAll))
+            this.displayTasks(store.getState().tasksData.todosAll)
+            this.bindAllButtons()
+        }
+
+        async nodeFirstLoad(){
+            const response = await todosAPI.getTodosData()
+            store.dispatch(setTodosAll(response.todosAll))
+            store.dispatch(setIsConfirmedAll(response.isCompletedAll))
             this.displayTasks(store.getState().tasksData.todosAll)
             this.bindAllButtons()
         }
@@ -230,7 +245,7 @@ class Tasks{
             store.dispatch(setTodosAll(newArray))
             store.dispatch(setIsConfirmedAll(newIsConfirmedAll))
         }
-        const response = todosAPI.getTodosData()
+        
     }
 
     saveDataOnLocaleStorage(){
@@ -239,18 +254,10 @@ class Tasks{
         localStorage.setItem('confirmeAllStatus', store.getState().tasksData.confirmeAllStatus)
     }
 
-    // addToTasks(taskText){
-    //     this.todosAll.push({
-    //         id: Date.now(),
-    //         isCompleted: false,
-    //         title: taskText
-    //     })
-    // }
-
     createChangedStatusArray(event){
         const newArray = store.getState().tasksData.todosAll.map(todo => {
-            const searchedId = Number(event.target.parentNode.getAttribute('data'))
-            if(todo.id === searchedId) {
+            const selectedId = Number(event.target.parentNode.getAttribute('data'))
+            if(todo.id === selectedId) {
                 return {
                     ...todo,
                     isCompleted: !todo.isCompleted
@@ -263,7 +270,8 @@ class Tasks{
     }
 
     createAfterDeletingArray(event){
-        const newArray = store.getState().tasksData.todosAll.filter(todo => todo.id !== Number(event.target.parentNode.getAttribute('data')))
+        const selectedTodoId = Number(event.target.parentNode.getAttribute('data'))
+        const newArray = store.getState().tasksData.todosAll.filter(todo => todo.id !== selectedTodoId)
         return newArray
     }
 
@@ -350,6 +358,7 @@ window.addEventListener('DOMContentLoaded', () => {
               '.confirme__all'
               )
         
-        mainPage.firstLoad()
+        //mainPage.firstLoad()
+        mainPage.nodeFirstLoad()
     
 })
