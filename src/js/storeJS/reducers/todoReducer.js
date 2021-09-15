@@ -12,6 +12,7 @@ const todoReducer = (action, state) => {
                     isConfirmedAll: action.isConfirmedAll
                 }
          case SET_TODOS:
+             console.log(action.newArray)
                 return {
                     ...state,
                     todosAll : action.newArray
@@ -22,7 +23,8 @@ const todoReducer = (action, state) => {
                     isCompleted: false,
                     title: action.taskText
                 }
-                const response = todosAPI.addTodo(newTask)
+                todosAPI.addTodo(newTask)
+                //setTodosAll(response)
                 return {
                     ...state,
                     todosAll : [...state.todosAll, newTask]

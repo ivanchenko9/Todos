@@ -78,7 +78,6 @@ class Main{
             store.dispatch(createTaskAC(taskText))
             this.displayTasks(store.getState().tasksData.todosAll)
             event.target.value=''
-            this.tasksEnst.saveDataOnLocaleStorage()
        }
 
        clearParentNode(){
@@ -90,7 +89,7 @@ class Main{
         this.tasks = document.querySelector('.tasks')
        }
        
-    displayTasks(selectedArray){
+     displayTasks(selectedArray){
               
         this.clearParentNode()
 
@@ -135,7 +134,6 @@ class Main{
        addEmitters(){
         this.emitter.subscribe('event:create-task', (event) => {
             this.creatTask(event)
-            this.tasksEnst.saveDataOnLocaleStorage()
         })
 
         this.emitter.subscribe('event:mode-all', () => {
@@ -155,32 +153,27 @@ class Main{
         this.emitter.subscribe('event:clear-all-completed', () => {
             this.tasksEnst.clearAllCompletedTasks()
             this.displayTasks(store.getState().tasksData.todosAll)
-            todosAPI.clearDone()
         })
 
         this.emitter.subscribe('event:confirm-all', () => {
             this.tasksEnst.confirmeAllTasks()
             this.displayTasks(store.getState().tasksData.todosAll)
-            todosAPI.completeAll()
-            this.tasksEnst.saveDataOnLocaleStorage()
         })
 
         this.emitter.subscribe('event:change-status', (event) => {
+            todosAPI.updateTodo(event)
             const newArray = this.tasksEnst.createChangedStatusArray(event)
             store.dispatch(setTodosAll(newArray))
             this.displayTasks(store.getState().tasksData.todosAll)
             this.changeTasksAmount()
-            todosAPI.updateTodo(event)
-            this.tasksEnst.saveDataOnLocaleStorage()
         })
 
         this.emitter.subscribe('event:delete-task', (event) => {
+            todosAPI.deleteTodo(event)
             const newArray = this.tasksEnst.createAfterDeletingArray(event)
             store.dispatch(setTodosAll(newArray))
             this.changeTasksAmount()
             this.displayTasks(store.getState().tasksData.todosAll)
-            todosAPI.deleteTodo(event)
-            this.tasksEnst.saveDataOnLocaleStorage()
         })
 
        }
@@ -228,9 +221,8 @@ class Main{
         }
 
         async nodeFirstLoad(){
-            const response = await todosAPI.getTodosData()
-            store.dispatch(setTodosAll(response.todosAll))
-            store.dispatch(setIsConfirmedAll(response.isCompletedAll))
+            const arrayFromDB = await todosAPI.getTodosData()
+            store.dispatch(setTodosAll(arrayFromDB))
             this.displayTasks(store.getState().tasksData.todosAll)
             this.bindAllButtons()
         }
@@ -246,12 +238,6 @@ class Tasks{
             store.dispatch(setIsConfirmedAll(newIsConfirmedAll))
         }
         
-    }
-
-    saveDataOnLocaleStorage(){
-        const ModedArray = JSON.stringify(store.getState().tasksData.todosAll)
-        localStorage.setItem('todosAll', ModedArray)
-        localStorage.setItem('confirmeAllStatus', store.getState().tasksData.confirmeAllStatus)
     }
 
     createChangedStatusArray(event){
@@ -287,12 +273,13 @@ class Tasks{
     }
 
     clearAllCompletedTasks(){
+        todosAPI.clearDone()
         const newArray = store.getState().tasksData.todosAll.filter(todo => todo.isCompleted !== true)
         store.dispatch(setTodosAll(newArray))
-        this.saveDataOnLocaleStorage()
     }
 
     confirmeAllTasks(){
+        todosAPI.completeAll()
         if(store.getState().tasksData.isConfirmedAll){
              const newArray = store.getState().tasksData.todosAll.map(todo => ({
                 ...todo,
@@ -307,7 +294,6 @@ class Tasks{
         store.dispatch(setTodosAll(newArray))
         }
         store.dispatch(setIsConfirmedAll(!store.getState().tasksData.isConfirmedAll))
-        this.saveDataOnLocaleStorage()
     }
 }
 

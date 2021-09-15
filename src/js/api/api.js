@@ -1,4 +1,6 @@
 import * as axios from 'axios'
+import store from '../storeJS/store.js'
+import {setTodosAll} from '../storeJS/reducers/todoReducer.js'
 
 
 const instance = axios.create({
@@ -27,12 +29,20 @@ const instance = axios.create({
     },
     updateTodo(event){
         const selectedId = Number(event.target.parentNode.getAttribute('data'))
+        let newTodoStatus
+        store.getState().tasksData.todosAll.forEach((todo) => {
+            if(todo.id === selectedId){
+                newTodoStatus = !todo.isCompleted
+            }
+        })
         try {
             const rawQuerySetting = {
-                id : selectedId
+                id : selectedId,
+                isCompleted: newTodoStatus
             }
             const parsedQuerySetting = JSON.stringify(rawQuerySetting)
-            return instance.post('/todos/update', parsedQuerySetting).then( response => console.log(response.data))
+            return instance.post('/todos/update', parsedQuerySetting).
+            then( response => store.dispatch(setTodosAll(response.data)))
         }
         catch (error){
             alert('Ошибка при обновлении данных!')
