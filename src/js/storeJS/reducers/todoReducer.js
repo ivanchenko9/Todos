@@ -12,7 +12,7 @@ const todoReducer = (action, state) => {
                     isConfirmedAll: action.isConfirmedAll
                 }
          case SET_TODOS:
-             console.log(action.newArray)
+             //console.log(action.newArray)
                 return {
                     ...state,
                     todosAll : action.newArray

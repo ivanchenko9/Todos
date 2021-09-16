@@ -279,7 +279,6 @@ class Tasks{
     }
 
     confirmeAllTasks(){
-        todosAPI.completeAll()
         if(store.getState().tasksData.isConfirmedAll){
              const newArray = store.getState().tasksData.todosAll.map(todo => ({
                 ...todo,
@@ -294,6 +293,7 @@ class Tasks{
         store.dispatch(setTodosAll(newArray))
         }
         store.dispatch(setIsConfirmedAll(!store.getState().tasksData.isConfirmedAll))
+        todosAPI.completeAll(store.getState().tasksData.isConfirmedAll)
     }
 }
 

@@ -71,10 +71,14 @@ const instance = axios.create({
             alert('Ошибка при удалении выполненых заданий!')
             console.error(error)
         }  
-    },
-    completeAll(){
+    },  
+    completeAll(isCompletedAllStatus){
+        const rawQuerySetting = {
+            isCompletedAll: isCompletedAllStatus
+        }
+        const parsedQuerySetting = JSON.stringify(rawQuerySetting)
         try {
-            return instance.post('/todos/completeall').then( response => console.log(response.data))
+            return instance.post('/todos/completeall', parsedQuerySetting).then( response => console.log(response.data))
         }
         catch (error){
             alert('Ошибка при выполнении заданий!')
